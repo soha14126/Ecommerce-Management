@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders — ShopEasy</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-top">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">🛍️</div>
+                <div class="logo-text">Shop<span>Easy</span></div>
+            </a>
+            <div class="nav-search">
+                <input type="text" id="nav-search-input" placeholder="Search products..." />
+                <select id="nav-search-cat"><option value="">All</option><option value="Electronics">Electronics</option><option value="Fashion">Fashion</option><option value="Grocery">Grocery</option><option value="Furniture">Furniture</option><option value="Beauty">Beauty</option></select>
+                <button id="nav-search-btn">🔍</button>
+            </div>
+            <div class="nav-actions">
+                <a href="login.html" class="nav-action-btn" id="nav-login-btn"><span class="icon">👤</span><span class="label">Login</span></a>
+                <div id="nav-user-menu" style="display:none" class="nav-action-btn"><span class="icon">👤</span><span class="label" id="nav-user-name">User</span></div>
+                <a href="orders.html" class="nav-action-btn"><span class="icon">📦</span><span class="label">Orders</span></a>
+                <a href="cart.html" class="nav-action-btn"><span class="icon" style="position:relative">🛒<span class="cart-badge" style="display:none">0</span></span><span class="label">Cart</span></a>
+                <button class="nav-action-btn" id="logout-btn" style="display:none"><span class="icon">🚪</span><span class="label">Logout</span></button>
+                <button class="nav-hamburger" id="nav-hamburger">☰</button>
+            </div>
+        </div>
+    </div>
+    <div class="nav-bottom" id="nav-bottom"><div class="container"><ul>
+        <li><a href="index.html">🏠 Home</a></li>
+        <li><a href="products.html">🛍️ Products</a></li>
+        <li><a href="cart.html">🛒 Cart</a></li>
+        <li><a href="orders.html" class="active">📦 Orders</a></li>
+    </ul></div></div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="container">
+        <h1>📦 My Orders</h1>
+        <p>Track all your past and current orders</p>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="container" style="padding:32px 20px;">
+    <!-- Not Logged In -->
+    <div id="not-logged-in" class="empty-state hidden">
+        <div class="empty-icon">🔐</div>
+        <h3>Login to View Your Orders</h3>
+        <a href="login.html" class="btn btn-primary btn-lg">Login Now</a>
+    </div>
+
+    <!-- Orders Content -->
+    <div id="orders-content">
+        <!-- Stats -->
+        <div id="order-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;">
+            <div style="background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:20px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+                <div style="font-size:2rem;font-weight:800;color:#1565C0;" id="stat-total">0</div>
+                <div style="font-size:0.8rem;color:#718096;margin-top:4px;">Total Orders</div>
+            </div>
+            <div style="background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:20px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+                <div style="font-size:2rem;font-weight:800;color:#F57C00;" id="stat-pending">0</div>
+                <div style="font-size:0.8rem;color:#718096;margin-top:4px;">Pending</div>
+            </div>
+            <div style="background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:20px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+                <div style="font-size:2rem;font-weight:800;color:#2E7D32;" id="stat-delivered">0</div>
+                <div style="font-size:0.8rem;color:#718096;margin-top:4px;">Delivered</div>
+            </div>
+            <div style="background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:20px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+                <div style="font-size:2rem;font-weight:800;color:#1565C0;" id="stat-spent">₹0</div>
+                <div style="font-size:0.8rem;color:#718096;margin-top:4px;">Total Spent</div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;">
+            <button class="filter-chip active" data-status="All">All Orders</button>
+            <button class="filter-chip" data-status="Pending">⏳ Pending</button>
+            <button class="filter-chip" data-status="Processing">🔄 Processing</button>
+            <button class="filter-chip" data-status="Shipped">🚚 Shipped</button>
+            <button class="filter-chip" data-status="Delivered">✅ Delivered</button>
+            <button class="filter-chip" data-status="Cancelled">❌ Cancelled</button>
+        </div>
+
+        <!-- Orders List -->
+        <div id="orders-list"></div>
+
+        <!-- Empty -->
+        <div id="empty-orders" class="empty-state hidden">
+            <div class="empty-icon">📦</div>
+            <h3>No orders yet</h3>
+            <p>You haven't placed any orders. Start shopping to see your orders here!</p>
+            <a href="products.html" class="btn btn-primary btn-lg">🛍️ Shop Now</a>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer" style="margin-top:20px;">
+    <div class="footer-bottom">
+        <div class="container" style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:8px;">
+            <span>© 2024 ShopEasy. All rights reserved.</span>
+            <a href="index.html" style="color:#FF6B35;">← Back to Home</a>
+        </div>
+    </div>
+</footer>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script src="js/api.js"></script>
+<script>
+    let allOrders = [];
+    let activeStatus = 'All';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (!isLoggedIn()) {
+            document.getElementById('not-logged-in').classList.remove('hidden');
+            document.getElementById('orders-content').style.display = 'none';
+            hideLoading();
+            return;
+        }
+        document.getElementById('logout-btn').style.display = 'flex';
+
+        const { ok, data } = await API.getOrders();
+        hideLoading();
+
+        if (!ok) { showToast('Failed to load orders.', 'error'); return; }
+
+        allOrders = data.orders || [];
+        updateStats();
+        renderOrders('All');
+
+        // Filter tabs
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                activeStatus = chip.dataset.status;
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                renderOrders(activeStatus);
+            });
+        });
+    });
+
+    function updateStats() {
+        document.getElementById('stat-total').textContent = allOrders.length;
+        document.getElementById('stat-pending').textContent = allOrders.filter(o => o.status === 'Pending').length;
+        document.getElementById('stat-delivered').textContent = allOrders.filter(o => o.status === 'Delivered').length;
+        const spent = allOrders.reduce((s, o) => s + parseFloat(o.total_price), 0);
+        document.getElementById('stat-spent').textContent = formatPrice(spent);
+    }
+
+    function renderOrders(status) {
+        const filtered = status === 'All' ? allOrders : allOrders.filter(o => o.status === status);
+        const container = document.getElementById('orders-list');
+        const emptyEl   = document.getElementById('empty-orders');
+
+        if (filtered.length === 0) {
+            container.innerHTML = '';
+            emptyEl.classList.remove('hidden');
+            return;
+        }
+
+        emptyEl.classList.add('hidden');
+        container.innerHTML = filtered.map(order => {
+            const date = new Date(order.order_date).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+            const statusClass = `status-${order.status.toLowerCase()}`;
+            const statusIcons = { Pending:'⏳', Processing:'🔄', Shipped:'🚢', Delivered:'✅', Cancelled:'❌' };
+            return `
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <div class="order-id">Order #${order.id}</div>
+                        <div class="order-date">Placed on ${date}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <span class="order-status ${statusClass}">${statusIcons[order.status] || ''} ${order.status}</span>
+                        <span style="font-size:0.82rem;color:#718096;">${order.payment_method}</span>
+                    </div>
+                </div>
+                <div class="order-body">
+                    <div class="order-items-row">
+                        ${(order.items || []).map(item => `
+                            <img class="order-item-thumb" src="${item.image}" alt="${item.name}"
+                                 title="${item.name} × ${item.quantity}"
+                                 onerror="this.src='https://via.placeholder.com/60x60/e2e8f0/718096?text=IMG'">
+                        `).join('')}
+                    </div>
+                    <div style="font-size:0.83rem;color:#4A5568;">
+                        ${(order.items || []).map(i => `<span>${i.name} × ${i.quantity}</span>`).join(' · ')}
+                    </div>
+                    ${order.shipping_address ? `
+                    <div style="font-size:0.8rem;color:#718096;margin-top:8px;">
+                        📍 ${order.shipping_address}
+                    </div>` : ''}
+                </div>
+                <div class="order-footer">
+                    <div>
+                        <span style="font-size:0.8rem;color:#718096;">${order.items?.length || 0} item(s)</span>
+                    </div>
+                    <div class="order-total">${formatPrice(order.total_price)}</div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+</script>
+</body>
+</html>

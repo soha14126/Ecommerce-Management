@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products — ShopEasy</title>
+    <meta name="description" content="Browse all products on ShopEasy. Filter by category, search by name, and find the best deals.">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="loading-overlay" id="loading-overlay" style="display:none"><div class="spinner"></div></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-top">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">🛍️</div>
+                <div class="logo-text">Shop<span>Easy</span></div>
+            </a>
+            <div class="nav-search">
+                <input type="text" id="nav-search-input" placeholder="Search products..." />
+                <select id="nav-search-cat">
+                    <option value="">All</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Grocery">Grocery</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Beauty">Beauty</option>
+                </select>
+                <button id="nav-search-btn">🔍</button>
+            </div>
+            <div class="nav-actions">
+                <a href="login.html" class="nav-action-btn" id="nav-login-btn"><span class="icon">👤</span><span class="label">Login</span></a>
+                <div id="nav-user-menu" style="display:none" class="nav-action-btn"><span class="icon">👤</span><span class="label" id="nav-user-name">User</span></div>
+                <a href="orders.html" class="nav-action-btn"><span class="icon">📦</span><span class="label">Orders</span></a>
+                <a href="cart.html" class="nav-action-btn"><span class="icon" style="position:relative">🛒<span class="cart-badge" style="display:none">0</span></span><span class="label">Cart</span></a>
+                <button class="nav-action-btn" id="logout-btn" style="display:none"><span class="icon">🚪</span><span class="label">Logout</span></button>
+                <button class="nav-hamburger" id="nav-hamburger">☰</button>
+            </div>
+        </div>
+    </div>
+    <div class="nav-bottom" id="nav-bottom">
+        <div class="container">
+            <ul>
+                <li><a href="index.html">🏠 Home</a></li>
+                <li><a href="products.html" class="active">🛍️ All Products</a></li>
+                <li><a href="products.html?category=Electronics">⚡ Electronics</a></li>
+                <li><a href="products.html?category=Fashion">👗 Fashion</a></li>
+                <li><a href="products.html?category=Grocery">🥦 Grocery</a></li>
+                <li><a href="products.html?category=Furniture">🛋️ Furniture</a></li>
+                <li><a href="products.html?category=Beauty">💄 Beauty</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="container">
+        <h1 id="page-title">🛍️ All Products</h1>
+        <p id="page-subtitle">Discover our curated selection of premium products</p>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<section class="section">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="index.html">Home</a><span class="sep">›</span>
+            <span id="breadcrumb-current">All Products</span>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <span class="filter-label">Filter:</span>
+            <div class="filter-chips">
+                <button class="filter-chip active" data-cat="All">All</button>
+                <button class="filter-chip" data-cat="Electronics">⚡ Electronics</button>
+                <button class="filter-chip" data-cat="Fashion">👗 Fashion</button>
+                <button class="filter-chip" data-cat="Grocery">🥦 Grocery</button>
+                <button class="filter-chip" data-cat="Furniture">🛋️ Furniture</button>
+                <button class="filter-chip" data-cat="Beauty">💄 Beauty</button>
+            </div>
+            <select class="filter-sort" id="sort-select">
+                <option value="default">Sort: Default</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="rating">Top Rated</option>
+            </select>
+        </div>
+
+        <!-- Results Info -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <p id="results-info" style="color:#718096;font-size:0.88rem;"></p>
+            <div style="display:flex;gap:8px;">
+                <button id="grid-view" title="Grid View" style="padding:8px;border:2px solid #1565C0;border-radius:6px;background:#1565C0;color:#fff;cursor:pointer;">⊞</button>
+                <button id="list-view" title="List View" style="padding:8px;border:2px solid #e2e8f0;border-radius:6px;background:transparent;cursor:pointer;">☰</button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="products-container">
+            <!-- Loaded dynamically -->
+        </div>
+
+        <!-- No Results -->
+        <div id="no-results" class="empty-state hidden">
+            <div class="empty-icon">🔍</div>
+            <h3>No products found</h3>
+            <p>Try adjusting your search or filter to find what you're looking for.</p>
+            <button class="btn btn-primary" onclick="resetFilters()">Clear Filters</button>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-bottom">
+        <div class="container" style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:8px;">
+            <span>© 2024 ShopEasy. All rights reserved.</span>
+            <span><a href="index.html" style="color:#FF6B35;">← Back to Home</a></span>
+        </div>
+    </div>
+</footer>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script src="js/api.js"></script>
+<script>
+    let currentCategory = 'All';
+    let currentSearch   = '';
+    let currentSort     = 'default';
+    let currentPage     = 1;
+    const LIMIT         = 12;
+
+    // Read URL params on load
+    document.addEventListener('DOMContentLoaded', () => {
+        if (isLoggedIn()) document.getElementById('logout-btn').style.display = 'flex';
+
+        const params = new URLSearchParams(window.location.search);
+        currentSearch   = params.get('search')   || '';
+        currentCategory = params.get('category') || 'All';
+
+        if (currentSearch) document.getElementById('nav-search-input').value = currentSearch;
+
+        // Sync filter chips
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.classList.toggle('active', chip.dataset.cat === currentCategory);
+        });
+
+        updatePageHeader();
+        loadProducts();
+
+        // Filter chips
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                currentCategory = chip.dataset.cat;
+                currentPage = 1;
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                updatePageHeader();
+                loadProducts();
+            });
+        });
+
+        // Sort
+        document.getElementById('sort-select').addEventListener('change', (e) => {
+            currentSort = e.target.value; currentPage = 1; loadProducts();
+        });
+
+        // Search (nav)
+        document.getElementById('nav-search-btn').addEventListener('click', () => {
+            currentSearch = document.getElementById('nav-search-input').value.trim();
+            currentPage = 1; loadProducts();
+        });
+        document.getElementById('nav-search-input').addEventListener('keypress', e => {
+            if (e.key === 'Enter') { currentSearch = e.target.value.trim(); currentPage = 1; loadProducts(); }
+        });
+
+        // View toggle
+        document.getElementById('grid-view').addEventListener('click', () => {
+            document.getElementById('products-container').className = 'products-grid';
+            document.getElementById('grid-view').style.background = '#1565C0';
+            document.getElementById('list-view').style.background = 'transparent';
+        });
+        document.getElementById('list-view').addEventListener('click', () => {
+            document.getElementById('products-container').className = 'products-grid' ;
+            document.getElementById('products-container').style.gridTemplateColumns = '1fr';
+            document.getElementById('list-view').style.background = '#1565C0';
+            document.getElementById('grid-view').style.background = 'transparent';
+        });
+    });
+
+    async function loadProducts() {
+        showLoading();
+        const offset = (currentPage - 1) * LIMIT;
+        const params = { limit: LIMIT, offset };
+        if (currentCategory !== 'All') params.category = currentCategory;
+        if (currentSearch) params.search = currentSearch;
+
+        const { ok, data } = await API.getProducts(params);
+        hideLoading();
+
+        const container = document.getElementById('products-container');
+        const noResults = document.getElementById('no-results');
+        const resInfo   = document.getElementById('results-info');
+
+        if (!ok) { showToast(data.message || 'Failed to load products.', 'error'); return; }
+
+        let products = data.products || [];
+
+        // Client-side sort
+        if      (currentSort === 'price-asc')  products.sort((a,b) => a.price - b.price);
+        else if (currentSort === 'price-desc') products.sort((a,b) => b.price - a.price);
+        else if (currentSort === 'rating')     products.sort((a,b) => b.rating - a.rating);
+
+        if (products.length === 0) {
+            container.innerHTML = '';
+            noResults.classList.remove('hidden');
+            resInfo.textContent = '';
+        } else {
+            noResults.classList.add('hidden');
+            container.innerHTML = products.map(createProductCard).join('');
+            resInfo.textContent = `Showing ${offset + 1}–${Math.min(offset + products.length, data.total)} of ${data.total} products`;
+        }
+
+        renderPagination(data.total);
+    }
+
+    function renderPagination(total) {
+        const pages = Math.ceil(total / LIMIT);
+        const pagi  = document.getElementById('pagination');
+        if (pages <= 1) { pagi.innerHTML = ''; return; }
+
+        let html = `<button class="page-btn" onclick="changePage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+        for (let i = 1; i <= pages; i++) {
+            html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="changePage(${i})">${i}</button>`;
+        }
+        html += `<button class="page-btn" onclick="changePage(${currentPage+1})" ${currentPage===pages?'disabled':''}>›</button>`;
+        pagi.innerHTML = html;
+    }
+
+    function changePage(p) { currentPage = p; loadProducts(); window.scrollTo(0,0); }
+
+    function resetFilters() {
+        currentCategory = 'All'; currentSearch = ''; currentSort = 'default'; currentPage = 1;
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.dataset.cat==='All'));
+        document.getElementById('sort-select').value = 'default';
+        document.getElementById('nav-search-input').value = '';
+        updatePageHeader(); loadProducts();
+    }
+
+    function updatePageHeader() {
+        const title = document.getElementById('page-title');
+        const sub   = document.getElementById('page-subtitle');
+        const bc    = document.getElementById('breadcrumb-current');
+        const icons = { All:'🛍️', Electronics:'⚡', Fashion:'👗', Grocery:'🥦', Furniture:'🛋️', Beauty:'💄' };
+        title.textContent = `${icons[currentCategory] || '🛍️'} ${currentCategory === 'All' ? 'All Products' : currentCategory}`;
+        sub.textContent   = currentSearch ? `Search results for "${currentSearch}"` : `Browse our ${currentCategory === 'All' ? 'complete' : currentCategory} collection`;
+        bc.textContent    = currentCategory === 'All' ? 'All Products' : currentCategory;
+    }
+</script>
+</body>
+</html>

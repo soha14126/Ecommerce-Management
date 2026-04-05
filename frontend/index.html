@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEasy — Online Shopping System</title>
+    <meta name="description" content="Shop the best deals on Electronics, Fashion, Grocery, Furniture and Beauty. Fast delivery, secure checkout.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading-overlay" style="display:none">
+    <div class="spinner"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════════ -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-top">
+            <!-- Logo -->
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">🛍️</div>
+                <div class="logo-text">Shop<span>Easy</span></div>
+            </a>
+
+            <!-- Search -->
+            <div class="nav-search">
+                <input type="text" id="nav-search-input" placeholder="Search for products, brands and more..." />
+                <select id="nav-search-cat">
+                    <option value="">All</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Grocery">Grocery</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Beauty">Beauty</option>
+                </select>
+                <button id="nav-search-btn">🔍</button>
+            </div>
+
+            <!-- Actions -->
+            <div class="nav-actions">
+                <!-- Login / Signup -->
+                <a href="login.html" class="nav-action-btn" id="nav-login-btn">
+                    <span class="icon">👤</span>
+                    <span class="label">Login</span>
+                </a>
+
+                <!-- User Menu (when logged in) -->
+                <div id="nav-user-menu" style="display:none" class="nav-action-btn">
+                    <span class="icon">👤</span>
+                    <span class="label" id="nav-user-name">User</span>
+                </div>
+
+                <!-- Orders -->
+                <a href="orders.html" class="nav-action-btn">
+                    <span class="icon">📦</span>
+                    <span class="label">Orders</span>
+                </a>
+
+                <!-- Cart -->
+                <a href="cart.html" class="nav-action-btn">
+                    <span class="icon" style="position:relative">
+                        🛒
+                        <span class="cart-badge" id="cart-badge" style="display:none">0</span>
+                    </span>
+                    <span class="label">Cart</span>
+                </a>
+
+                <!-- Logout -->
+                <button class="nav-action-btn" id="logout-btn" style="display:none">
+                    <span class="icon">🚪</span>
+                    <span class="label">Logout</span>
+                </button>
+
+                <button class="nav-hamburger" id="nav-hamburger">☰</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Nav -->
+    <div class="nav-bottom" id="nav-bottom">
+        <div class="container">
+            <ul>
+                <li><a href="index.html" class="active">🏠 Home</a></li>
+                <li><a href="products.html">🛍️ All Products</a></li>
+                <li><a href="products.html?category=Electronics">⚡ Electronics</a></li>
+                <li><a href="products.html?category=Fashion">👗 Fashion</a></li>
+                <li><a href="products.html?category=Grocery">🥦 Grocery</a></li>
+                <li><a href="products.html?category=Furniture">🛋️ Furniture</a></li>
+                <li><a href="products.html?category=Beauty">💄 Beauty</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     TRUST BAR
+═══════════════════════════════════════════════ -->
+<div class="trust-bar">
+    <div class="container">
+        <div class="trust-items">
+            <div class="trust-item"><span class="icon">🚚</span> Free Delivery over ₹999</div>
+            <div class="trust-item"><span class="icon">🔒</span> 100% Secure Payments</div>
+            <div class="trust-item"><span class="icon">↩️</span> Easy 30-Day Returns</div>
+            <div class="trust-item"><span class="icon">💬</span> 24/7 Customer Support</div>
+            <div class="trust-item"><span class="icon">⭐</span> 4.8/5 Rated by Customers</div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     HERO SECTION
+═══════════════════════════════════════════════ -->
+<section class="hero">
+    <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800" alt="Shopping Hero">
+    </div>
+    <div class="container" style="position:relative;z-index:1;">
+        <div class="hero-content">
+            <div class="hero-badge">🎉 Mega Sale — Up to 50% Off!</div>
+            <h1>Shop the <span>Best Deals</span><br>All in One Place</h1>
+            <p>Discover thousands of products across Electronics, Fashion, Grocery, Furniture and Beauty — at unbeatable prices.</p>
+            <div class="hero-btns">
+                <a href="products.html" class="btn btn-accent btn-lg">🛍️ Shop Now</a>
+                <a href="products.html?category=Electronics" class="btn btn-outline btn-lg" style="border-color:rgba(255,255,255,0.5);color:#fff;">📱 Electronics</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat"><div class="number">25+</div><div class="label">Products</div></div>
+                <div class="hero-stat"><div class="number">5</div><div class="label">Categories</div></div>
+                <div class="hero-stat"><div class="number">100%</div><div class="label">Secure</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     CATEGORIES
+═══════════════════════════════════════════════ -->
+<section class="section bg-gray">
+    <div class="container">
+        <div class="section-header">
+            <div class="badge">Browse by Category</div>
+            <h2>Shop Our Top Categories</h2>
+            <p>Find exactly what you're looking for across our curated collections.</p>
+            <div class="line"><div class="dot"></div></div>
+        </div>
+        <div class="categories-grid">
+            <div class="category-card" onclick="window.location.href='products.html?category=Electronics'">
+                <div class="cat-img">
+                    <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400" alt="Electronics">
+                    <div class="cat-overlay"></div>
+                </div>
+                <div class="cat-info">
+                    <div class="cat-icon">⚡</div>
+                    <div class="cat-name">Electronics</div>
+                    <div class="cat-count" id="cat-count-Electronics">5 products</div>
+                </div>
+            </div>
+            <div class="category-card" onclick="window.location.href='products.html?category=Fashion'">
+                <div class="cat-img">
+                    <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=400" alt="Fashion">
+                    <div class="cat-overlay"></div>
+                </div>
+                <div class="cat-info">
+                    <div class="cat-icon">👗</div>
+                    <div class="cat-name">Fashion</div>
+                    <div class="cat-count" id="cat-count-Fashion">5 products</div>
+                </div>
+            </div>
+            <div class="category-card" onclick="window.location.href='products.html?category=Grocery'">
+                <div class="cat-img">
+                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=400" alt="Grocery">
+                    <div class="cat-overlay"></div>
+                </div>
+                <div class="cat-info">
+                    <div class="cat-icon">🥦</div>
+                    <div class="cat-name">Grocery</div>
+                    <div class="cat-count" id="cat-count-Grocery">5 products</div>
+                </div>
+            </div>
+            <div class="category-card" onclick="window.location.href='products.html?category=Furniture'">
+                <div class="cat-img">
+                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400" alt="Furniture">
+                    <div class="cat-overlay"></div>
+                </div>
+                <div class="cat-info">
+                    <div class="cat-icon">🛋️</div>
+                    <div class="cat-name">Furniture</div>
+                    <div class="cat-count" id="cat-count-Furniture">5 products</div>
+                </div>
+            </div>
+            <div class="category-card" onclick="window.location.href='products.html?category=Beauty'">
+                <div class="cat-img">
+                    <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400" alt="Beauty">
+                    <div class="cat-overlay"></div>
+                </div>
+                <div class="cat-info">
+                    <div class="cat-icon">💄</div>
+                    <div class="cat-name">Beauty</div>
+                    <div class="cat-count" id="cat-count-Beauty">5 products</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     FEATURED PRODUCTS
+═══════════════════════════════════════════════ -->
+<section class="section">
+    <div class="container">
+        <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;text-align:left;margin-bottom:28px;">
+            <div>
+                <div class="badge">Hand-Picked</div>
+                <h2 style="margin:8px 0 0">Featured Products</h2>
+            </div>
+            <a href="products.html" class="btn btn-outline">View All →</a>
+        </div>
+        <div class="products-grid" id="featured-products">
+            <!-- Skeleton loaders -->
+            <div class="product-card"><div class="product-img skeleton" style="height:200px"></div><div class="product-info"><div class="skeleton" style="height:14px;margin-bottom:8px;width:60%"></div><div class="skeleton" style="height:18px;margin-bottom:10px"></div><div class="skeleton" style="height:30px;width:80%"></div></div></div>
+            <div class="product-card"><div class="product-img skeleton" style="height:200px"></div><div class="product-info"><div class="skeleton" style="height:14px;margin-bottom:8px;width:60%"></div><div class="skeleton" style="height:18px;margin-bottom:10px"></div><div class="skeleton" style="height:30px;width:80%"></div></div></div>
+            <div class="product-card"><div class="product-img skeleton" style="height:200px"></div><div class="product-info"><div class="skeleton" style="height:14px;margin-bottom:8px;width:60%"></div><div class="skeleton" style="height:18px;margin-bottom:10px"></div><div class="skeleton" style="height:30px;width:80%"></div></div></div>
+            <div class="product-card"><div class="product-img skeleton" style="height:200px"></div><div class="product-info"><div class="skeleton" style="height:14px;margin-bottom:8px;width:60%"></div><div class="skeleton" style="height:18px;margin-bottom:10px"></div><div class="skeleton" style="height:30px;width:80%"></div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PROMO BANNER
+═══════════════════════════════════════════════ -->
+<section style="background:linear-gradient(135deg,#FF6B35,#E64A19);padding:48px 0;color:#fff;text-align:center;">
+    <div class="container">
+        <h2 style="font-size:2rem;font-weight:800;margin-bottom:10px;">🎁 Special Offer — Today Only!</h2>
+        <p style="color:rgba(255,255,255,0.85);font-size:1.1rem;margin-bottom:24px;">Use code <strong>SAVE20</strong> for extra 20% off on your first order!</p>
+        <a href="products.html" class="btn" style="background:#fff;color:#E64A19;font-weight:700;padding:14px 36px;border-radius:50px;font-size:1rem;">Shop Now & Save</a>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     ALL PRODUCTS SECTION
+═══════════════════════════════════════════════ -->
+<section class="section bg-gray">
+    <div class="container">
+        <div class="section-header">
+            <div class="badge">Our Products</div>
+            <h2>All Products</h2>
+            <div class="line"><div class="dot"></div></div>
+        </div>
+        <div class="products-grid" id="all-products">
+            <!-- Loaded dynamically -->
+        </div>
+        <div style="text-align:center;margin-top:32px;">
+            <a href="products.html" class="btn btn-primary btn-lg">View All Products →</a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     NEWSLETTER
+═══════════════════════════════════════════════ -->
+<section class="newsletter">
+    <div class="container">
+        <h2>📧 Subscribe for Exclusive Deals</h2>
+        <p>Get the latest offers, new arrivals, and exclusive discounts delivered to your inbox.</p>
+        <div class="newsletter-form">
+            <input type="email" id="newsletter-email" placeholder="Enter your email address" />
+            <button onclick="handleNewsletter()">Subscribe</button>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════ -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo nav-logo" style="margin-bottom:16px;">
+                    <div class="logo-icon">🛍️</div>
+                    <div class="logo-text" style="color:#fff;">Shop<span style="color:#FF6B35;">Easy</span></div>
+                </div>
+                <p>Your one-stop destination for the best deals on Electronics, Fashion, Grocery, Furniture and Beauty. Shop smart, live better.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-btn">📘</a>
+                    <a href="#" class="social-btn">📷</a>
+                    <a href="#" class="social-btn">🐦</a>
+                    <a href="#" class="social-btn">▶️</a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">All Products</a></li>
+                    <li><a href="cart.html">My Cart</a></li>
+                    <li><a href="orders.html">My Orders</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="signup.html">Sign Up</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="products.html?category=Electronics">⚡ Electronics</a></li>
+                    <li><a href="products.html?category=Fashion">👗 Fashion</a></li>
+                    <li><a href="products.html?category=Grocery">🥦 Grocery</a></li>
+                    <li><a href="products.html?category=Furniture">🛋️ Furniture</a></li>
+                    <li><a href="products.html?category=Beauty">💄 Beauty</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact Us</h4>
+                <ul class="footer-contact">
+                    <li><span class="icon">📍</span><span>123 Market Street, Mumbai, Maharashtra 400001</span></li>
+                    <li><span class="icon">📞</span><span>+91 98765 43210</span></li>
+                    <li><span class="icon">✉️</span><span>support@shopeasy.com</span></li>
+                    <li><span class="icon">⏰</span><span>Mon–Sat: 9AM–8PM</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container" style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:8px;">
+            <span>© 2024 ShopEasy. All rights reserved.</span>
+            <span>Made with ❤️ | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></span>
+        </div>
+    </div>
+</footer>
+
+<script src="js/api.js"></script>
+<script>
+    // Handle auth UI (show/hide logout)
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Show logout if logged in
+        if (isLoggedIn()) {
+            document.getElementById('logout-btn').style.display = 'flex';
+        }
+
+        // Load categories
+        const { data: catData } = await API.getCategories();
+        if (catData.categories) {
+            catData.categories.forEach(c => {
+                const el = document.getElementById(`cat-count-${c.category}`);
+                if (el) el.textContent = `${c.count} products`;
+            });
+        }
+
+        // Load Featured Products
+        const { ok: fOk, data: fData } = await API.getFeatured();
+        const featuredEl = document.getElementById('featured-products');
+        if (fOk && fData.products.length > 0) {
+            featuredEl.innerHTML = fData.products.slice(0, 8).map(createProductCard).join('');
+        } else {
+            featuredEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><h3>No products yet</h3><p>Check back soon!</p></div>';
+        }
+
+        // Load All Products preview (first 8)
+        const { ok: pOk, data: pData } = await API.getProducts({ limit: 8 });
+        const allEl = document.getElementById('all-products');
+        if (pOk && pData.products.length > 0) {
+            allEl.innerHTML = pData.products.map(createProductCard).join('');
+        }
+    });
+
+    function handleNewsletter() {
+        const email = document.getElementById('newsletter-email').value;
+        if (!email || !email.includes('@')) { showToast('Please enter a valid email.', 'warning'); return; }
+        showToast('🎉 Subscribed successfully! Check your inbox for offers.', 'success');
+        document.getElementById('newsletter-email').value = '';
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart — ShopEasy</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-top">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">🛍️</div>
+                <div class="logo-text">Shop<span>Easy</span></div>
+            </a>
+            <div class="nav-search">
+                <input type="text" id="nav-search-input" placeholder="Search products..." />
+                <select id="nav-search-cat"><option value="">All</option><option value="Electronics">Electronics</option><option value="Fashion">Fashion</option><option value="Grocery">Grocery</option><option value="Furniture">Furniture</option><option value="Beauty">Beauty</option></select>
+                <button id="nav-search-btn">🔍</button>
+            </div>
+            <div class="nav-actions">
+                <a href="login.html" class="nav-action-btn" id="nav-login-btn"><span class="icon">👤</span><span class="label">Login</span></a>
+                <div id="nav-user-menu" style="display:none" class="nav-action-btn"><span class="icon">👤</span><span class="label" id="nav-user-name">User</span></div>
+                <a href="orders.html" class="nav-action-btn"><span class="icon">📦</span><span class="label">Orders</span></a>
+                <a href="cart.html" class="nav-action-btn"><span class="icon" style="position:relative">🛒<span class="cart-badge" style="display:none">0</span></span><span class="label">Cart</span></a>
+                <button class="nav-action-btn" id="logout-btn" style="display:none"><span class="icon">🚪</span><span class="label">Logout</span></button>
+                <button class="nav-hamburger" id="nav-hamburger">☰</button>
+            </div>
+        </div>
+    </div>
+    <div class="nav-bottom" id="nav-bottom"><div class="container"><ul>
+        <li><a href="index.html">🏠 Home</a></li>
+        <li><a href="products.html">🛍️ All Products</a></li>
+        <li><a href="cart.html" class="active">🛒 Cart</a></li>
+    </ul></div></div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="container">
+        <h1>🛒 My Shopping Cart</h1>
+        <p>Review your items and proceed to checkout</p>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+    <!-- Not Logged In -->
+    <div id="not-logged-in" class="empty-state hidden" style="padding:60px 20px;">
+        <div class="empty-icon">🔐</div>
+        <h3>Please Login to View Cart</h3>
+        <p>You need to be logged in to manage your cart.</p>
+        <a href="login.html" class="btn btn-primary btn-lg">Login Now</a>
+    </div>
+
+    <!-- Cart Layout -->
+    <div class="cart-layout" id="cart-layout">
+        <!-- Cart Items -->
+        <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <h3 id="cart-title" style="font-size:1rem;font-weight:700;">Cart Items</h3>
+                <button class="btn btn-danger btn-sm" onclick="handleClearCart()" id="clear-cart-btn">🗑️ Clear Cart</button>
+            </div>
+
+            <div class="cart-items-section" id="cart-items">
+                <!-- Loaded dynamically -->
+            </div>
+
+            <!-- Empty Cart -->
+            <div id="empty-cart" class="empty-state hidden">
+                <div class="empty-icon">🛒</div>
+                <h3>Your cart is empty</h3>
+                <p>Add some products to your cart to continue shopping!</p>
+                <a href="products.html" class="btn btn-primary btn-lg">🛍️ Start Shopping</a>
+            </div>
+
+            <!-- Continue Shopping -->
+            <div style="margin-top:16px;">
+                <a href="products.html" class="btn btn-outline">← Continue Shopping</a>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div>
+            <div class="cart-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-row">
+                    <span class="label">Subtotal</span>
+                    <span class="value" id="subtotal">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Delivery</span>
+                    <span class="value" id="delivery" style="color:#2E7D32;">Free</span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Discount</span>
+                    <span class="value" id="discount" style="color:#2E7D32;">-₹0</span>
+                </div>
+                <div class="summary-total">
+                    <span class="label">Total</span>
+                    <span class="value" id="total">₹0</span>
+                </div>
+                <button class="btn btn-accent btn-block btn-lg" style="margin-top:20px;" onclick="goToCheckout()" id="checkout-btn">
+                    ⚡ Proceed to Checkout
+                </button>
+                <div style="display:flex;justify-content:center;gap:12px;margin-top:16px;font-size:0.78rem;color:#718096;">
+                    <span>🔒 Secure</span><span>🚚 Fast Delivery</span><span>↩️ Easy Returns</span>
+                </div>
+            </div>
+
+            <!-- Promo Code -->
+            <div class="cart-summary" style="margin-top:16px;">
+                <h3>Promo Code</h3>
+                <div style="display:flex;gap:8px;">
+                    <input type="text" id="promo-input" class="form-control" placeholder="Enter code" style="flex:1;">
+                    <button class="btn btn-primary" onclick="applyPromo()">Apply</button>
+                </div>
+                <p style="font-size:0.78rem;color:#718096;margin-top:8px;">Try: <strong>SAVE20</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer" style="margin-top:40px;">
+    <div class="footer-bottom">
+        <div class="container" style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:8px;">
+            <span>© 2024 ShopEasy. All rights reserved.</span>
+            <a href="index.html" style="color:#FF6B35;">← Back to Home</a>
+        </div>
+    </div>
+</footer>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script src="js/api.js"></script>
+<script>
+    let cartItems = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (!isLoggedIn()) {
+            document.getElementById('not-logged-in').classList.remove('hidden');
+            document.getElementById('cart-layout').style.display = 'none';
+            hideLoading();
+            return;
+        }
+        document.getElementById('logout-btn').style.display = 'flex';
+        await loadCart();
+    });
+
+    async function loadCart() {
+        const { ok, data } = await API.getCart();
+        hideLoading();
+
+        if (!ok) { showToast('Failed to load cart.', 'error'); return; }
+
+        cartItems = data.items || [];
+        renderCart(data.total);
+    }
+
+    function renderCart(total) {
+        const container  = document.getElementById('cart-items');
+        const emptyCart  = document.getElementById('empty-cart');
+        const clearBtn   = document.getElementById('clear-cart-btn');
+        const checkoutBtn= document.getElementById('checkout-btn');
+
+        if (cartItems.length === 0) {
+            container.innerHTML  = '';
+            emptyCart.classList.remove('hidden');
+            clearBtn.style.display    = 'none';
+            checkoutBtn.disabled      = true;
+            updateSummary(0);
+            document.getElementById('cart-title').textContent = 'Cart Items (0)';
+            return;
+        }
+
+        emptyCart.classList.add('hidden');
+        clearBtn.style.display  = 'inline-flex';
+        checkoutBtn.disabled    = false;
+        document.getElementById('cart-title').textContent = `Cart Items (${cartItems.length})`;
+
+        container.innerHTML = cartItems.map(item => `
+        <div class="cart-item" id="cart-item-${item.id}">
+            <img class="cart-item-img" src="${item.image}" alt="${item.name}"
+                 onerror="this.src='https://via.placeholder.com/90x90/e2e8f0/718096?text=IMG'">
+            <div class="cart-item-info">
+                <div class="cart-item-name"><a href="product-detail.html?id=${item.product_id}" style="color:inherit;">${item.name}</a></div>
+                <div class="cart-item-category">${item.category}</div>
+                <div class="cart-item-price">${formatPrice(item.price)}</div>
+            </div>
+            <div class="qty-control">
+                <button class="qty-btn" onclick="updateQty(${item.id}, ${item.quantity - 1})">−</button>
+                <input class="qty-input" type="number" value="${item.quantity}" min="1" max="99" onchange="updateQty(${item.id}, this.value)" id="qty-${item.id}">
+                <button class="qty-btn" onclick="updateQty(${item.id}, ${item.quantity + 1})">+</button>
+            </div>
+            <div style="font-weight:700;color:#1565C0;min-width:80px;text-align:right;">${formatPrice(item.price * item.quantity)}</div>
+            <button class="remove-btn" onclick="removeItem(${item.id})" title="Remove">🗑️</button>
+        </div>`).join('');
+
+        const totalVal = cartItems.reduce((s, i) => s + (i.price * i.quantity), 0);
+        updateSummary(totalVal);
+        updateCartBadge();
+    }
+
+    function updateSummary(total) {
+        const delivery = total > 999 ? 0 : 49;
+        const discount = total > 0 ? Math.round(total * 0.05) : 0;
+        const finalTotal = total + delivery - discount;
+
+        document.getElementById('subtotal').textContent = formatPrice(total);
+        document.getElementById('delivery').textContent = delivery === 0 ? 'Free' : formatPrice(delivery);
+        document.getElementById('discount').textContent = '-' + formatPrice(discount);
+        document.getElementById('total').textContent    = formatPrice(finalTotal);
+    }
+
+    async function updateQty(cartId, newQty) {
+        newQty = parseInt(newQty);
+        if (isNaN(newQty) || newQty < 1) { showToast('Minimum quantity is 1.', 'warning'); return; }
+
+        const { ok, data } = await API.updateCart(cartId, newQty);
+        if (ok) {
+            const item = cartItems.find(i => i.id === cartId);
+            if (item) item.quantity = newQty;
+            const total = cartItems.reduce((s, i) => s + (i.price * i.quantity), 0);
+            updateSummary(total);
+            updateCartBadge();
+        } else {
+            showToast(data.message, 'error');
+        }
+    }
+
+    async function removeItem(cartId) {
+        const el = document.getElementById(`cart-item-${cartId}`);
+        if (el) { el.style.opacity = '0.5'; el.style.pointerEvents = 'none'; }
+
+        const { ok, data } = await API.removeFromCart(cartId);
+        if (ok) {
+            cartItems = cartItems.filter(i => i.id !== cartId);
+            renderCart();
+            showToast('Item removed from cart.', 'success');
+        } else {
+            if (el) { el.style.opacity = '1'; el.style.pointerEvents = 'auto'; }
+            showToast(data.message, 'error');
+        }
+    }
+
+    async function handleClearCart() {
+        if (!confirm('Clear all items from cart?')) return;
+        const { ok, data } = await API.clearCart();
+        if (ok) { cartItems = []; renderCart(0); showToast('Cart cleared.', 'success'); }
+        else showToast(data.message, 'error');
+    }
+
+    function goToCheckout() {
+        if (cartItems.length === 0) { showToast('Your cart is empty.', 'warning'); return; }
+        window.location.href = 'checkout.html';
+    }
+
+    function applyPromo() {
+        const code = document.getElementById('promo-input').value.trim().toUpperCase();
+        if (code === 'SAVE20') showToast('🎉 Promo code applied! Extra 20% off!', 'success');
+        else showToast('Invalid promo code.', 'error');
+    }
+</script>
+</body>
+</html>

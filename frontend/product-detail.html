@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail — ShopEasy</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-top">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">🛍️</div>
+                <div class="logo-text">Shop<span>Easy</span></div>
+            </a>
+            <div class="nav-search">
+                <input type="text" id="nav-search-input" placeholder="Search products..." />
+                <select id="nav-search-cat"><option value="">All</option><option value="Electronics">Electronics</option><option value="Fashion">Fashion</option><option value="Grocery">Grocery</option><option value="Furniture">Furniture</option><option value="Beauty">Beauty</option></select>
+                <button id="nav-search-btn">🔍</button>
+            </div>
+            <div class="nav-actions">
+                <a href="login.html" class="nav-action-btn" id="nav-login-btn"><span class="icon">👤</span><span class="label">Login</span></a>
+                <div id="nav-user-menu" style="display:none" class="nav-action-btn"><span class="icon">👤</span><span class="label" id="nav-user-name">User</span></div>
+                <a href="orders.html" class="nav-action-btn"><span class="icon">📦</span><span class="label">Orders</span></a>
+                <a href="cart.html" class="nav-action-btn"><span class="icon" style="position:relative">🛒<span class="cart-badge" style="display:none">0</span></span><span class="label">Cart</span></a>
+                <button class="nav-action-btn" id="logout-btn" style="display:none"><span class="icon">🚪</span><span class="label">Logout</span></button>
+                <button class="nav-hamburger" id="nav-hamburger">☰</button>
+            </div>
+        </div>
+    </div>
+    <div class="nav-bottom" id="nav-bottom"><div class="container"><ul>
+        <li><a href="index.html">🏠 Home</a></li>
+        <li><a href="products.html">🛍️ All Products</a></li>
+        <li><a href="products.html?category=Electronics">⚡ Electronics</a></li>
+        <li><a href="products.html?category=Fashion">👗 Fashion</a></li>
+        <li><a href="products.html?category=Grocery">🥦 Grocery</a></li>
+        <li><a href="products.html?category=Furniture">🛋️ Furniture</a></li>
+        <li><a href="products.html?category=Beauty">💄 Beauty</a></li>
+    </ul></div></div>
+</nav>
+
+<!-- MAIN -->
+<div class="container">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Home</a><span class="sep">›</span>
+        <a href="products.html">Products</a><span class="sep">›</span>
+        <span id="breadcrumb-cat">...</span><span class="sep">›</span>
+        <span id="breadcrumb-name" style="color:#1A1A2E;font-weight:500;">Loading...</span>
+    </div>
+
+    <!-- Product Detail Layout -->
+    <div class="product-detail-layout" id="product-detail">
+        <!-- Loaded dynamically -->
+        <div class="skeleton" style="height:400px;border-radius:20px;"></div>
+        <div style="padding:10px 0;">
+            <div class="skeleton" style="height:20px;width:120px;margin-bottom:12px;"></div>
+            <div class="skeleton" style="height:32px;margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:32px;width:70%;margin-bottom:16px;"></div>
+            <div class="skeleton" style="height:16px;margin-bottom:8px;"></div>
+            <div class="skeleton" style="height:16px;width:80%;margin-bottom:16px;"></div>
+            <div class="skeleton" style="height:48px;width:160px;margin-bottom:12px;"></div>
+            <div class="skeleton" style="height:48px;margin-top:16px;"></div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <div id="related-section" class="section" style="padding-top:20px;">
+        <div class="section-header" style="text-align:left;margin-bottom:24px;">
+            <h2 style="font-size:1.4rem;">You May Also Like</h2>
+        </div>
+        <div class="products-grid" id="related-products"></div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer" style="margin-top:0;">
+    <div class="footer-bottom">
+        <div class="container" style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:8px;">
+            <span>© 2024 ShopEasy. All rights reserved.</span>
+            <a href="products.html" style="color:#FF6B35;">← Back to Products</a>
+        </div>
+    </div>
+</footer>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script src="js/api.js"></script>
+<script>
+    let productData = null;
+    let qty = 1;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (isLoggedIn()) document.getElementById('logout-btn').style.display = 'flex';
+
+        const id = new URLSearchParams(window.location.search).get('id');
+        if (!id) { window.location.href = 'products.html'; return; }
+
+        const { ok, data } = await API.getProduct(id);
+        hideLoading();
+
+        if (!ok || !data.product) {
+            document.getElementById('product-detail').innerHTML = '<div class="empty-state"><div class="empty-icon">😕</div><h3>Product not found</h3><a href="products.html" class="btn btn-primary">Browse Products</a></div>';
+            return;
+        }
+
+        productData = data.product;
+        renderProduct(productData);
+        document.title = `${productData.name} — ShopEasy`;
+
+        // Load related
+        const { data: rData } = await API.getProducts({ category: productData.category, limit: 4 });
+        if (rData.products) {
+            const related = rData.products.filter(p => p.id !== productData.id).slice(0, 4);
+            document.getElementById('related-products').innerHTML = related.map(createProductCard).join('');
+        }
+    });
+
+    function renderProduct(p) {
+        const { pct, original } = getDiscount(p.price);
+        const stockBadge = p.stock > 10
+            ? `<span class="stock-badge in-stock">✅ In Stock (${p.stock} available)</span>`
+            : p.stock > 0
+                ? `<span class="stock-badge low-stock">⚠️ Only ${p.stock} left!</span>`
+                : `<span class="stock-badge" style="background:rgba(198,40,40,0.1);color:#C62828;">❌ Out of Stock</span>`;
+
+        document.getElementById('breadcrumb-cat').innerHTML  = `<a href="products.html?category=${p.category}">${p.category}</a>`;
+        document.getElementById('breadcrumb-name').textContent = p.name;
+
+        document.getElementById('product-detail').innerHTML = `
+        <div class="product-detail-img">
+            <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/600x450/e2e8f0/718096?text=Product'">
+        </div>
+        <div class="product-detail-info">
+            <span class="category-tag">${p.category}</span>
+            <h1>${p.name}</h1>
+            <div class="product-rating" style="margin-bottom:12px;">
+                <span class="stars" style="font-size:1.1rem;">${renderStars(p.rating || 4.0)}</span>
+                <span style="font-weight:600;">${p.rating || 4.0}</span>
+                <span style="color:#718096;font-size:0.85rem;">(128 reviews)</span>
+            </div>
+            ${stockBadge}
+            <div class="detail-price">${formatPrice(p.price)}</div>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+                <span style="font-size:1rem;color:#718096;text-decoration:line-through;">${formatPrice(original)}</span>
+                <span style="background:rgba(46,125,50,0.1);color:#2E7D32;padding:3px 10px;border-radius:50px;font-size:0.82rem;font-weight:700;">🏷️ ${pct}% OFF</span>
+            </div>
+            <p class="detail-desc" style="margin-top:16px;">${p.description || 'Premium quality product. Fast delivery. 100% genuine.'}</p>
+
+            <div class="detail-quantity">
+                <span style="font-weight:600;color:#4A5568;">Quantity:</span>
+                <div class="qty-control">
+                    <button class="qty-btn" id="qty-minus" onclick="changeQty(-1)">−</button>
+                    <input class="qty-input" id="qty-val" type="number" value="1" min="1" max="${p.stock}" readonly>
+                    <button class="qty-btn" id="qty-plus" onclick="changeQty(1)">+</button>
+                </div>
+            </div>
+
+            <div class="detail-actions">
+                <button class="btn btn-primary btn-lg" onclick="addToCartDetail()" id="atc-btn" ${p.stock===0?'disabled':''}>
+                    🛒 Add to Cart
+                </button>
+                <button class="btn btn-accent btn-lg" onclick="buyNow()" ${p.stock===0?'disabled':''}>
+                    ⚡ Buy Now
+                </button>
+            </div>
+
+            <!-- Product Highlights -->
+            <div style="margin-top:28px;padding:20px;background:#F7F9FC;border-radius:12px;border:1px solid #E2E8F0;">
+                <h4 style="font-size:0.9rem;font-weight:700;margin-bottom:14px;color:#1A1A2E;">🎯 Product Highlights</h4>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:0.83rem;color:#4A5568;">
+                    <div>🚚 Free delivery above ₹999</div>
+                    <div>↩️ 30-day easy returns</div>
+                    <div>✅ 100% genuine product</div>
+                    <div>🔒 Secure payment</div>
+                    <div>⭐ Top rated seller</div>
+                    <div>📦 Fast packaging</div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    function changeQty(delta) {
+        const input = document.getElementById('qty-val');
+        qty = Math.max(1, Math.min(parseInt(input.value) + delta, productData.stock));
+        input.value = qty;
+    }
+
+    async function addToCartDetail() {
+        const btn = document.getElementById('atc-btn');
+        if (!isLoggedIn()) { showToast('Please login first!', 'warning'); setTimeout(() => window.location.href='login.html', 1200); return; }
+        btn.disabled = true; btn.innerHTML = '⏳ Adding...';
+        const { ok, data } = await API.addToCart({ product_id: productData.id, quantity: qty });
+        if (ok) { showToast('✅ Added to cart!', 'success'); updateCartBadge(); }
+        else    showToast(data.message, 'error');
+        btn.disabled = false; btn.innerHTML = '🛒 Add to Cart';
+    }
+
+    async function buyNow() {
+        if (!isLoggedIn()) { showToast('Please login first!', 'warning'); setTimeout(() => window.location.href='login.html', 1200); return; }
+        const { ok, data } = await API.addToCart({ product_id: productData.id, quantity: qty });
+        if (ok) { updateCartBadge(); window.location.href = 'cart.html'; }
+        else     showToast(data.message, 'error');
+    }
+</script>
+</body>
+</html>

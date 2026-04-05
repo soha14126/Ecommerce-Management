@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — ShopEasy</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-top">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">🛍️</div>
+                <div class="logo-text">Shop<span>Easy</span></div>
+            </a>
+            <div class="nav-search">
+                <input type="text" id="nav-search-input" placeholder="Search products..." />
+                <select id="nav-search-cat"><option value="">All</option></select>
+                <button id="nav-search-btn">🔍</button>
+            </div>
+            <div class="nav-actions">
+                <a href="login.html" class="nav-action-btn" id="nav-login-btn"><span class="icon">👤</span><span class="label">Login</span></a>
+                <div id="nav-user-menu" style="display:none" class="nav-action-btn"><span class="icon">👤</span><span class="label" id="nav-user-name">User</span></div>
+                <a href="cart.html" class="nav-action-btn"><span class="icon" style="position:relative">🛒<span class="cart-badge" style="display:none">0</span></span><span class="label">Cart</span></a>
+                <button class="nav-action-btn" id="logout-btn" style="display:none"><span class="icon">🚪</span><span class="label">Logout</span></button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="container">
+        <h1>⚡ Checkout</h1>
+        <p>Complete your order — just a few steps away!</p>
+        <!-- Progress Steps -->
+        <div style="display:flex;align-items:center;gap:0;margin-top:20px;">
+            <div style="display:flex;align-items:center;gap:8px;color:#fff;font-size:0.82rem;font-weight:600;">
+                <span style="width:24px;height:24px;border-radius:50%;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:0.75rem;">1</span>
+                Cart
+            </div>
+            <div style="flex:1;height:2px;background:rgba(255,255,255,0.3);margin:0 10px;max-width:60px;"></div>
+            <div style="display:flex;align-items:center;gap:8px;color:#fff;font-size:0.82rem;font-weight:600;">
+                <span style="width:24px;height:24px;border-radius:50%;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-size:0.75rem;">2</span>
+                Checkout
+            </div>
+            <div style="flex:1;height:2px;background:rgba(255,255,255,0.2);margin:0 10px;max-width:60px;"></div>
+            <div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.5);font-size:0.82rem;">
+                <span style="width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:0.75rem;">3</span>
+                Confirmation
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+    <!-- Not Logged In -->
+    <div id="not-logged-in" class="empty-state hidden" style="padding:60px 20px;">
+        <div class="empty-icon">🔐</div>
+        <h3>Please Login to Checkout</h3>
+        <a href="login.html" class="btn btn-primary btn-lg">Login Now</a>
+    </div>
+
+    <!-- Checkout Grid -->
+    <div class="checkout-layout" id="checkout-layout">
+        <!-- LEFT: Form -->
+        <div>
+            <!-- Shipping Info -->
+            <div class="checkout-form-card">
+                <h3>📍 Shipping Information</h3>
+                <div id="form-alert"></div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="ship-name">Full Name *</label>
+                        <input type="text" id="ship-name" class="form-control" placeholder="John Doe" required>
+                        <div class="form-error" id="name-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ship-phone">Phone Number *</label>
+                        <input type="tel" id="ship-phone" class="form-control" placeholder="+91 98765 43210" required>
+                        <div class="form-error" id="phone-error"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ship-address">Delivery Address *</label>
+                    <textarea id="ship-address" class="form-control" rows="3" placeholder="House No., Street, Area, City, State, PIN" required></textarea>
+                    <div class="form-error" id="address-error"></div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="ship-city">City</label>
+                        <input type="text" id="ship-city" class="form-control" placeholder="Mumbai">
+                    </div>
+                    <div class="form-group">
+                        <label for="ship-pin">PIN Code</label>
+                        <input type="text" id="ship-pin" class="form-control" placeholder="400001">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment -->
+            <div class="checkout-form-card" style="margin-top:20px;">
+                <h3>💳 Payment Method</h3>
+                <div class="payment-options">
+                    <div class="payment-option">
+                        <input type="radio" name="payment" id="pay-cod" value="COD" checked>
+                        <label for="pay-cod">💵 Cash on Delivery</label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" name="payment" id="pay-upi" value="UPI">
+                        <label for="pay-upi">📱 UPI Payment</label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" name="payment" id="pay-credit" value="Credit Card">
+                        <label for="pay-credit">💳 Credit Card</label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" name="payment" id="pay-debit" value="Debit Card">
+                        <label for="pay-debit">🏧 Debit Card</label>
+                    </div>
+                </div>
+
+                <!-- UPI / Card dummy UI -->
+                <div id="upi-section" style="display:none;margin-top:16px;">
+                    <div class="form-group">
+                        <label>UPI ID</label>
+                        <input type="text" class="form-control" placeholder="yourname@upi">
+                    </div>
+                </div>
+                <div id="card-section" style="display:none;margin-top:16px;">
+                    <div class="form-group"><label>Card Number</label><input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19"></div>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Expiry</label><input type="text" class="form-control" placeholder="MM/YY"></div>
+                        <div class="form-group"><label>CVV</label><input type="password" class="form-control" placeholder="•••" maxlength="3"></div>
+                    </div>
+                </div>
+                <div style="margin-top:16px;padding:12px 16px;background:rgba(46,125,50,0.08);border-radius:8px;font-size:0.82rem;color:#2E7D32;">
+                    🔒 Your payment info is encrypted and 100% secure. We never store card details.
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Summary -->
+        <div>
+            <div class="cart-summary" style="position:sticky;top:80px;">
+                <h3>📦 Order Summary</h3>
+                <div id="order-items-summary" style="margin-bottom:16px;max-height:280px;overflow-y:auto;">
+                    <!-- Items listed here -->
+                </div>
+                <div class="summary-row"><span class="label">Subtotal</span><span class="value" id="sum-subtotal">₹0</span></div>
+                <div class="summary-row"><span class="label">Delivery</span><span class="value" style="color:#2E7D32;">Free</span></div>
+                <div class="summary-row"><span class="label">Discount (5%)</span><span class="value" style="color:#2E7D32;" id="sum-discount">-₹0</span></div>
+                <div class="summary-total">
+                    <span class="label">Total</span>
+                    <span class="value" id="sum-total">₹0</span>
+                </div>
+                <button class="btn btn-accent btn-block btn-lg" style="margin-top:20px;" onclick="placeOrder()" id="place-order-btn">
+                    🎉 Place Order
+                </button>
+                <p style="text-align:center;font-size:0.78rem;color:#718096;margin-top:10px;">By placing order you agree to our <a href="#" style="color:#1565C0;">Terms</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div id="success-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:none;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:20px;padding:48px;text-align:center;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+        <div style="font-size:4rem;margin-bottom:16px;">🎉</div>
+        <h2 style="font-size:1.6rem;font-weight:800;color:#1A1A2E;margin-bottom:8px;">Order Placed!</h2>
+        <p style="color:#4A5568;margin-bottom:8px;">Your order has been successfully placed and will be delivered soon.</p>
+        <p>Order ID: <strong id="success-order-id" style="color:#1565C0;"></strong></p>
+        <p style="margin-top:4px;">Total: <strong id="success-total" style="color:#1565C0;"></strong></p>
+        <div style="display:flex;gap:12px;margin-top:28px;justify-content:center;">
+            <a href="orders.html" class="btn btn-primary btn-lg">📦 View Orders</a>
+            <a href="index.html" class="btn btn-outline btn-lg">🏠 Home</a>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script src="js/api.js"></script>
+<script>
+    let cartItems = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (!isLoggedIn()) {
+            document.getElementById('not-logged-in').classList.remove('hidden');
+            document.getElementById('checkout-layout').style.display = 'none';
+            hideLoading();
+            return;
+        }
+        document.getElementById('logout-btn').style.display = 'flex';
+
+        // Prefill from profile
+        const { data: profileData } = await API.getProfile();
+        if (profileData.user) {
+            document.getElementById('ship-name').value = profileData.user.name || '';
+            if (profileData.user.phone) document.getElementById('ship-phone').value = profileData.user.phone;
+        }
+
+        const { ok, data } = await API.getCart();
+        hideLoading();
+
+        if (!ok || data.items.length === 0) {
+            showToast('Your cart is empty!', 'warning');
+            setTimeout(() => window.location.href = 'cart.html', 1200);
+            return;
+        }
+
+        cartItems = data.items;
+        renderSummary(cartItems);
+
+        // Payment toggles
+        document.querySelectorAll('input[name="payment"]').forEach(r => {
+            r.addEventListener('change', () => {
+                document.getElementById('upi-section').style.display  = r.value === 'UPI'    ? 'block' : 'none';
+                document.getElementById('card-section').style.display = (r.value === 'Credit Card' || r.value === 'Debit Card') ? 'block' : 'none';
+            });
+        });
+    });
+
+    function renderSummary(items) {
+        const summaryEl = document.getElementById('order-items-summary');
+        summaryEl.innerHTML = items.map(item => `
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #E2E8F0;">
+                <img src="${item.image}" alt="${item.name}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;border:1px solid #E2E8F0;" onerror="this.src='https://via.placeholder.com/48'">
+                <div style="flex:1;">
+                    <div style="font-size:0.83rem;font-weight:600;color:#1A1A2E;line-height:1.3;">${item.name}</div>
+                    <div style="font-size:0.75rem;color:#718096;">Qty: ${item.quantity}</div>
+                </div>
+                <div style="font-weight:700;font-size:0.88rem;color:#1565C0;">${formatPrice(item.price * item.quantity)}</div>
+            </div>`).join('');
+
+        const subtotal = items.reduce((s, i) => s + (i.price * i.quantity), 0);
+        const discount = Math.round(subtotal * 0.05);
+        const total    = subtotal - discount;
+        document.getElementById('sum-subtotal').textContent = formatPrice(subtotal);
+        document.getElementById('sum-discount').textContent = '-' + formatPrice(discount);
+        document.getElementById('sum-total').textContent    = formatPrice(total);
+    }
+
+    async function placeOrder() {
+        clearErrors();
+        const name    = document.getElementById('ship-name').value.trim();
+        const phone   = document.getElementById('ship-phone').value.trim();
+        const address = document.getElementById('ship-address').value.trim();
+        const city    = document.getElementById('ship-city').value.trim();
+        const pin     = document.getElementById('ship-pin').value.trim();
+        const payment = document.querySelector('input[name="payment"]:checked')?.value || 'COD';
+
+        let valid = true;
+        if (!name)    { showErr('name', 'Name is required.');    valid = false; }
+        if (!phone)   { showErr('phone', 'Phone is required.');  valid = false; }
+        if (!address) { showErr('address', 'Address is required.'); valid = false; }
+        if (!valid) return;
+
+        const fullAddress = [address, city, pin].filter(Boolean).join(', ');
+
+        const btn = document.getElementById('place-order-btn');
+        btn.disabled = true; btn.innerHTML = '⏳ Placing Order...';
+
+        const { ok, data } = await API.placeOrder({
+            shipping_name: name,
+            shipping_address: fullAddress,
+            shipping_phone: phone,
+            payment_method: payment
+        });
+
+        if (ok) {
+            document.getElementById('success-order-id').textContent = '#' + data.orderId;
+            document.getElementById('success-total').textContent    = formatPrice(data.totalPrice);
+            document.getElementById('success-modal').style.display  = 'flex';
+            updateCartBadge();
+        } else {
+            showToast(data.message || 'Failed to place order.', 'error');
+            btn.disabled = false; btn.innerHTML = '🎉 Place Order';
+        }
+    }
+
+    function showErr(field, msg) {
+        const el = document.getElementById(`${field}-error`);
+        if (el) el.textContent = msg;
+    }
+    function clearErrors() {
+        ['name','phone','address'].forEach(f => { const e = document.getElementById(`${f}-error`); if(e) e.textContent=''; });
+    }
+</script>
+</body>
+</html>
